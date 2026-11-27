@@ -7,11 +7,12 @@ The RTL in `rtl/` is Greg Taylor's
 [opl3_fpga](https://github.com/gtaylormb/opl3_fpga) (commit 491a4dc),
 a reverse-engineered SystemVerilog implementation of the Yamaha
 YMF262. It is **not** an original core of this repository: it is
-vendored unmodified except for one configuration constant in
-`rtl/opl3_pkg.sv`, where `CLK_FREQ` is set to the genuine YMF262
-master clock (14.31818 MHz, marked with an `OPL3-verilator:` comment)
-so the sample divider is exactly 288 and the output sample rate is
-exactly 49715.97 Hz.
+vendored unmodified except for two configuration constants in
+`rtl/opl3_pkg.sv` (both marked with `OPL3-verilator:` comments):
+`CLK_FREQ` is set to the genuine YMF262 master clock (14.31818 MHz),
+and `CLK_DIV_COUNT` is set to exactly 288 — the `$ceil` expression
+upstream rounds 288.0000161 up to 289, which would run the core
+0.35% slow. With 288 the output sample rate is exactly 49715.97 Hz.
 
 The C++ harness in `src/` only decodes VGM, drives the core's host
 bus (address/data writes for the 0x5E/0x5F commands), captures the

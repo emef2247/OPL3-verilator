@@ -62,7 +62,10 @@ package opl3_pkg;
     localparam INSTANTIATE_SAMPLE_SYNC_TO_DAC_CLK = 0;
 
     localparam DESIRED_SAMPLE_FREQ = 49.7159e3;
-    localparam CLK_DIV_COUNT = int'($ceil(CLK_FREQ/DESIRED_SAMPLE_FREQ)); // unsupported by Quartus 17, set manually
+    // OPL3-verilator: set to exactly 288. The $ceil expression rounds
+    // 14.31818e6/49.7159e3 = 288.0000161 up to 289, which would run the
+    // core 0.35% slow; the genuine chip's divider is 288 by design.
+    localparam CLK_DIV_COUNT = 288;
     localparam ACTUAL_SAMPLE_FREQ = CLK_FREQ/CLK_DIV_COUNT;
 
     localparam NUM_REG_PER_BANK = 'hF6;

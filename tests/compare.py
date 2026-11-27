@@ -2,11 +2,20 @@
 the same OPL3 VGM: length, level, lag-aligned correlation, and a
 per-harmonic snapshot of a stable segment."""
 import sys
+import wave
 import numpy as np
-import soundfile as sf
 
-rtl, r1 = sf.read(sys.argv[1], always_2d=True)
-nuk, r2 = sf.read(sys.argv[2], always_2d=True)
+
+def read_wav(path):
+    with wave.open(path) as w:
+        rate, ch, n = w.getframerate(), w.getnchannels(), w.getnframes()
+        raw = w.readframes(n)
+    a = np.frombuffer(raw, dtype='<i2').astype(float) / 32768.0
+    return a.reshape(-1, ch), rate
+
+
+rtl, r1 = read_wav(sys.argv[1])
+nuk, r2 = read_wav(sys.argv[2])
 assert r1 == r2 == 44100, (r1, r2)
 print('rtl frames', len(rtl), 'nuked frames', len(nuk))
 n = min(len(rtl), len(nuk))
