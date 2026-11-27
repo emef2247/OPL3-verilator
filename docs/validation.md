@@ -32,10 +32,36 @@ tail).
   10–15 s window, **0.67** full-length; per-4 s blocks range
   0.29–0.81, lowest late in the song.
 
-## Reading
+## Reading (model comparison only)
 
 The models agree on the 2-op basics and on overall level, and
 diverge in 4-op waveform structure. Which one matches the real
 YMF262 in 4-op operation cannot be settled by comparing the two
-models alone; a real-hardware recording (e.g. MoonSound FM, which is
-the OPL3 block) of the 4-op probe is the arbiter.
+models alone; a real-hardware recording of the 4-op probe is the
+arbiter.
+
+## Real-hardware adjudication (2026-11-28, owner's recordings)
+
+The owner played the two probe VGMs (2-op and 4-op algorithm 0,
+sustained A4) and the SALAMD01–14 opl3-profile variant VGMs on his
+MSX hardware and recorded the outputs (48 kHz stereo, dual-mono).
+
+- 2-op probe: the recording's harmonic profile matches both models
+  (H1–H7 within ~1 dB). Control passes.
+- 4-op probe: the recording matches **Nuked**, not this RTL.
+  Per-harmonic error of the recording against each render
+  (mean |Δ| over H2–H10, two steady windows): Nuked **0.64 dB**
+  (max 1.6 dB); this RTL **6.5 dB** (max 15.6 dB — H2, H3 and H6
+  are 7–16 dB too weak). The sustain level is also consistent with
+  Nuked once the session gain measured on the 2-op probe (~1.1×)
+  is applied.
+- The full-song recordings could not separate the models
+  (waveform and STFT comparisons tie; the recording chain smears
+  phase), which is why the single-note probes were needed.
+
+Conclusion: for 4-op operation this RTL's output diverges from the
+real chip, and Nuked reproduces the chip. Per this repo's policy
+the difference is recorded here as a finding; the vendored core is
+not patched. Downstream, Nuked remains the reference renderer for
+OPL3 fitting work, and this simulator should not be used as the
+hardware reference for 4-op patches.
